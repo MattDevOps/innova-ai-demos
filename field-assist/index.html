@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Innova Field Assist - AI troubleshooting copilot</title>
+<meta name="description" content="An AI troubleshooting copilot for Innova 2.0 field technicians, grounded in the real service manual.">
+<link rel="stylesheet" href="../assets/base.css">
+<style>
+.device{background:var(--screen);border-radius:22px;overflow:hidden;color:var(--ink);
+  box-shadow:0 1px 0 rgba(255,255,255,.05),0 30px 70px -30px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06);
+  display:flex;flex-direction:column;min-height:560px;max-height:74vh}
+.demo{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:24px;align-items:start}
+@media(max-width:820px){.demo{grid-template-columns:1fr}}
+.device-top{background:var(--screen-2);border-bottom:1px solid var(--line-l);
+  padding:13px 16px;display:flex;align-items:center;gap:11px}
+.sig{display:flex;gap:5px;align-items:center}
+.sig i{width:8px;height:8px;border-radius:50%;background:#cdd7d9;display:block}
+.sig i:nth-child(1){background:var(--green)}
+.device-head{display:flex;flex-direction:column;line-height:1.25;margin-left:2px}
+.device-title{font-weight:640;font-size:14px;color:var(--ink)}
+.device-sub{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);letter-spacing:.02em}
+.live{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--cyan-deep);
+  display:flex;align-items:center;gap:6px}
+.live b{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;
+  box-shadow:0 0 0 0 rgba(47,158,111,.5);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(47,158,111,.5)}70%{box-shadow:0 0 0 7px rgba(47,158,111,0)}100%{box-shadow:0 0 0 0 rgba(47,158,111,0)}}
+.thread{flex:1;overflow-y:auto;padding:18px 16px 8px;display:flex;flex-direction:column;gap:14px;background:var(--screen)}
+.msg{display:flex;flex-direction:column;max-width:88%;animation:rise .32s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.msg.user{align-self:flex-end;align-items:flex-end}
+.who{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin:0 4px 5px}
+.bubble{border-radius:14px;padding:11px 14px;font-size:14.5px;line-height:1.5}
+.msg.user .bubble{background:var(--cyan-deep);color:#eafcff;border-bottom-right-radius:5px}
+.msg.bot .bubble{background:#fff;border:1px solid var(--line-l);border-bottom-left-radius:5px;box-shadow:0 2px 10px -6px rgba(15,26,30,.25)}
+.b-title{font-weight:640;font-size:14.5px;color:var(--ink);display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.b-code{font-family:var(--mono);font-size:12.5px;font-weight:600;padding:1px 7px;border-radius:6px;background:var(--screen-2);color:var(--cyan-deep);border:1px solid var(--line-l)}
+.steps{margin:9px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;counter-reset:s}
+.steps li{position:relative;padding-left:22px;font-size:13.8px;color:#2b3a3f;line-height:1.45}
+.steps li::before{content:counter(s);counter-increment:s;position:absolute;left:0;top:1px;
+  font-family:var(--mono);font-size:10.5px;font-weight:600;width:16px;height:16px;border-radius:5px;
+  display:grid;place-items:center;background:var(--screen-2);color:var(--cyan-deep);border:1px solid var(--line-l)}
+.bubble .pill{margin-top:11px;align-self:flex-start}
+details.cite{margin-top:11px;border-top:1px dashed var(--line-l);padding-top:10px}
+details.cite summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px;
+  font-family:var(--mono);font-size:11px;color:var(--cyan-deep);letter-spacing:.01em;user-select:none}
+details.cite summary::-webkit-details-marker{display:none}
+details.cite summary .doc{color:var(--ink-mut)}
+details.cite summary::before{content:"\25B8";display:inline-block;transition:transform .18s;color:var(--ink-faint)}
+details.cite[open] summary::before{transform:rotate(90deg)}
+.quote{margin:9px 0 0;font-size:12.8px;color:#415256;background:var(--screen-2);border-left:2px solid var(--cyan);border-radius:0 8px 8px 0;padding:9px 12px;font-style:italic}
+.typing{display:flex;gap:4px;padding:12px 15px;background:#fff;border:1px solid var(--line-l);border-radius:14px;border-bottom-left-radius:5px;width:max-content}
+.typing i{width:6px;height:6px;border-radius:50%;background:#b7c3c6;animation:blink 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.18s}.typing i:nth-child(3){animation-delay:.36s}
+@keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+.composer{border-top:1px solid var(--line-l);background:var(--screen-2);padding:11px 12px 13px}
+.suggest{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.chip{font-family:var(--mono);font-size:11.5px;border:1px solid var(--line-l);background:#fff;color:var(--cyan-deep);border-radius:999px;padding:5px 11px;cursor:pointer;transition:.15s}
+.chip:hover{border-color:var(--cyan);background:#f0fbfc}
+form{display:flex;gap:8px}
+#input{flex:1;border:1px solid var(--line-l);background:#fff;border-radius:11px;padding:11px 13px;font-size:14px;color:var(--ink)}
+#input::placeholder{color:var(--ink-faint)}
+#input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(18,179,198,.16)}
+#send{border:none;background:var(--cyan-deep);color:#eafcff;border-radius:11px;padding:0 16px;font-weight:600;font-size:14px;cursor:pointer;transition:.15s;flex:none}
+#send:hover{background:#096571}
+.sidecar{display:flex;flex-direction:column;gap:16px}
+.codes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.codes li{display:flex;align-items:center;gap:10px;font-size:13px;color:#c3cfd1}
+.codes .c{font-family:var(--mono);font-weight:600;font-size:12px;color:#eafcff;background:var(--ground-2);border:1px solid var(--line-d);border-radius:6px;padding:2px 7px;flex:none;min-width:30px;text-align:center}
+.codes .s{margin-left:auto;width:8px;height:8px;border-radius:50%;flex:none}
+.s.safe{background:var(--green)}.s.caution{background:var(--amber)}.s.stop{background:var(--red)}
+.real p{margin:0;font-size:12.8px;color:#9fb0b3;line-height:1.55}
+.real p+p{margin-top:9px}
+.real b{color:#dfe8ea;font-weight:600}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="frame">
+    <a class="brand" href="../index.html">
+      <span class="mark" aria-hidden="true"></span>
+      <div>
+        <div class="brand-name">Innova <span>Field Assist</span></div>
+        <div class="brand-sub">Troubleshooting copilot for 2.0 field technicians</div>
+      </div>
+    </a>
+    <a class="frame-note" href="../index.html">&larr; both tools</a>
+  </header>
+
+  <main>
+    <section class="lede">
+      <h1 class="lede-h">Type the error code. Get the fix, <em>with the manual page it came from.</em></h1>
+      <p>A technician on site asks in plain language; the assistant answers only from Innova's own 2.0 service manual and always shows its source. Try it below - it runs entirely in your browser, no login, no setup.</p>
+    </section>
+
+    <div class="demo">
+      <div class="device">
+        <div class="device-top">
+          <div class="sig" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="device-head">
+            <span class="device-title">2.0 Field Assist</span>
+            <span class="device-sub">manual: 2.0 HP DC Inverter (EN)</span>
+          </div>
+          <div class="live"><b></b>online</div>
+        </div>
+        <div class="thread" id="thread" aria-live="polite"></div>
+        <div class="composer">
+          <div class="suggest" id="suggest"></div>
+          <form id="form" autocomplete="off">
+            <input id="input" name="q" placeholder="Describe the fault, e.g. 'E4 in cold weather'" aria-label="Describe the fault">
+            <button id="send" type="submit">Ask</button>
+          </form>
+        </div>
+      </div>
+
+      <aside class="sidecar">
+        <div class="card">
+          <div class="eyebrow">Seeded manual, real codes</div>
+          <ul class="codes" id="codelist"></ul>
+        </div>
+        <div class="card real">
+          <div class="eyebrow">What's real here</div>
+          <p>Every answer is grounded in the <b>actual Innova/Ephoca 2.0 manual</b> (Error Codes, p.38). Nothing is invented.</p>
+          <p>This shareable version retrieves from a <b>seeded slice</b> of that manual so it runs with zero setup and no data leaves the page. The production build calls a live model over the full library.</p>
+        </div>
+      </aside>
+    </div>
+
+    <section class="prod">
+      <h2 class="eyebrow">From this demo to something Innova's techs use</h2>
+      <div class="grid4">
+        <div class="pcard"><div class="n">01</div><h3>Full manual library</h3><p>Retrieval over every 2.0, monobloc and STONE manual plus service bulletins, each answer citing the exact page.</p></div>
+        <div class="pcard"><div class="n">02</div><h3>EN / IT / HE</h3><p>Same tool, the technician's language. One knowledge base serves Har Tuv, Storo and the field.</p></div>
+        <div class="pcard"><div class="n">03</div><h3>Private by design</h3><p>Runs on Innova-controlled infra so manuals and customer data never leave the company.</p></div>
+        <div class="pcard"><div class="n">04</div><h3>Ships in weeks</h3><p>A phone web app the field team opens on any device. One high-value quick win first, measured, then expanded.</p></div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span>Built as a conversation starter, no obligation. <b>Matthew Hasson</b> &middot; AI Growth Manager candidate</span>
+      <span class="mono">source: Innova 2.0 Installation &amp; Maintenance Manual, Error Codes p.38</span>
+    </footer>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var CITE_CODES = {doc:"Innova 2.0 Manual", loc:"Error Codes, p.38"};
+  var CITE_TS = {doc:"Innova 2.0 Manual", loc:"Troubleshooting"};
+
+  var KB = [
+    {id:"E1", match:["e1","error 1","code 1","room sensor","rt sensor"],
+     title:"Room temperature (RT) sensor fault", code:"E1", sev:"safe",
+     steps:["Cooling, dehumidify and heating still run normally - only the antifreeze monitoring is disabled.","Power-cycle the unit: disconnect power, wait 5 minutes, then reconnect.","If E1 comes back, the RT sensor needs replacing. Schedule a technician - it is not urgent."],
+     cite:CITE_CODES, quote:"E1 - Faulty room temperature (RT) sensor. Antifreeze monitoring is disabled; cooling, dehumidify and heating operate normally."},
+    {id:"E2", match:["e2","error 2","code 2","internal coil","ipt"],
+     title:"Internal coil (IPT) sensor fault", code:"E2", sev:"safe",
+     steps:["The unit keeps working in cooling, dehumidify and heating.","Power-cycle the unit: disconnect power, wait 5 minutes, then reconnect.","If E2 persists, check the IPT sensor connector and replace the sensor if faulty."],
+     cite:CITE_CODES, quote:"E2 - Faulty internal coil (IPT) sensor. Cooling, dehumidify and heating operate normally."},
+    {id:"E3", match:["e3","error 3","code 3","outside sensor","outside temp","ot sensor"],
+     title:"Outside temperature (OT) sensor fault", code:"E3", sev:"safe",
+     steps:["All operating modes continue to work.","Power-cycle the unit: disconnect power, wait 5 minutes, then reconnect.","If E3 persists, inspect the OT sensor and connector; replace the sensor if needed."],
+     cite:CITE_CODES, quote:"E3 - Faulty outside temperature (OT) sensor. Cooling, dehumidify and heating operate normally."},
+    {id:"E4", match:["e4","error 4","code 4","external coil","opt","defrost","defrosting","icing","frost"],
+     title:"External coil (OPT) sensor fault", code:"E4", sev:"caution",
+     steps:["Modes still run, but automatic defrosting is disabled - this matters in cold, humid weather.","Power-cycle the unit: disconnect power, wait 5 minutes, then reconnect.","While defrost is off, watch the outdoor coil for ice build-up during heating.","If E4 persists, replace the OPT sensor before the cold season."],
+     cite:CITE_CODES, quote:"E4 - Faulty external coil (OPT) sensor. Automatic defrosting is disabled; cooling, dehumidify and heating operate normally."},
+    {id:"E5", match:["e5","error 5","code 5","fan motor","won't start","wont start","will not start","dead","nothing works","fan"],
+     title:"Internal fan motor fault", code:"E5", sev:"stop",
+     steps:["The unit will not operate with this fault - do not keep trying to run it.","This one is not a power-cycle fix. It needs a qualified technician.","Technician: check the fan motor wiring and connector, then test/replace the internal fan motor."],
+     cite:CITE_CODES, quote:"E5 - Faulty internal fan motor. Contact an authorized technician; the unit does not operate."},
+    {id:"heat", match:["not heating","no heat","won't heat","wont heat","cold air in heat","not warming","heating not working"],
+     title:"Unit is not heating", sev:"safe",
+     steps:["Confirm the mode is set to Heat and the setpoint is above the room temperature.","Check the filters are clean and airflow is not blocked - clogged filters kill heating output.","If it pauses and blows cooler air briefly, that is a normal defrost cycle, not a fault.","If an E-code is showing, resolve that first - ask me the code."],
+     cite:CITE_TS, quote:"Insufficient heating: verify mode and setpoint, clean the filters, and ensure airflow is unobstructed. A defrost cycle temporarily interrupts heating."},
+    {id:"cool", match:["not cooling","no cold","won't cool","wont cool","not cold","warm air in cool","cooling not working"],
+     title:"Unit is not cooling", sev:"safe",
+     steps:["Confirm the mode is set to Cool and the setpoint is below the room temperature.","Clean or check the filters - dirty filters are the most common cause.","Make sure nothing blocks the indoor or outdoor airflow.","If an E-code is showing, tell me the code and I'll walk you through it."],
+     cite:CITE_TS, quote:"Insufficient cooling: verify mode and setpoint, clean the filters, and ensure airflow is unobstructed."},
+    {id:"leak", match:["leak","leaking","water","dripping","drip","condensate","puddle"],
+     title:"Water dripping from the unit", sev:"caution",
+     steps:["This is almost always the condensate drain, not a refrigerant issue.","Check the condensate drain hose for a blockage or a kink and clear it.","Confirm the unit is mounted level with the correct slope so water drains away.","If it keeps leaking after clearing the drain, escalate to a technician."],
+     cite:CITE_TS, quote:"Water leakage: check the condensate drain for blockages and confirm the unit is installed level with proper drainage."},
+    {id:"noise", match:["noise","noisy","rattle","rattling","vibration","loud","buzzing"],
+     title:"Unusual noise or vibration", sev:"safe",
+     steps:["Check the filter and front panel are seated correctly - a loose panel rattles.","Look for any object caught in the fan.","Verify the wall mounting is tight; loose brackets transmit vibration.","Persistent grinding or a motor whine can indicate the fan motor - watch for an E5."],
+     cite:CITE_TS, quote:"Abnormal noise: check that panels and filters are secured and inspect for obstructions in the fan."}
+  ];
+
+  var SEV = {safe:{label:"Safe to keep running",cls:"safe"},caution:{label:"Run with caution",cls:"caution"},stop:{label:"Stop - call a technician",cls:"stop"}};
+  var SUGGEST = [
+    {label:"E5 - unit won't start", q:"E5, the unit won't start"},
+    {label:"E4 in cold weather", q:"E4 in cold weather"},
+    {label:"Not heating", q:"unit is not heating"},
+    {label:"Water dripping", q:"water dripping from the unit"}
+  ];
+
+  var thread=document.getElementById("thread"),form=document.getElementById("form"),input=document.getElementById("input");
+  var reduce=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
+  function scroll(){thread.scrollTop=thread.scrollHeight;}
+  function addUser(text){var m=el("div","msg user");m.appendChild(el("div","who","Technician"));m.appendChild(el("div","bubble",text));thread.appendChild(m);scroll();}
+  function lookup(text){
+    var t=(" "+text.toLowerCase()+" ").replace(/[.,!?]/g," ");
+    var h=t.match(/\be\s*([1-5])\b/)||t.match(/\b(?:error|code)\s*([1-5])\b/);
+    if(h){var id="E"+h[1];for(var i=0;i<KB.length;i++)if(KB[i].id===id)return KB[i];}
+    var best=null,len=0;
+    for(var k=0;k<KB.length;k++){var m=KB[k].match;for(var j=0;j<m.length;j++){if(t.indexOf(m[j])>-1&&m[j].length>len){best=KB[k];len=m[j].length;}}}
+    return best;
+  }
+  function renderAnswer(e){
+    var b=el("div","bubble"),title=el("div","b-title");
+    if(e.code)title.appendChild(el("span","b-code",e.code));
+    title.appendChild(document.createTextNode(e.title));b.appendChild(title);
+    var ol=el("ul","steps");e.steps.forEach(function(s){ol.appendChild(el("li",null,s));});b.appendChild(ol);
+    var s=SEV[e.sev];b.appendChild(el("div","pill "+s.cls,s.label));
+    var d=el("details","cite"),sum=el("summary");
+    sum.appendChild(document.createTextNode("Source: "));sum.appendChild(el("span","doc",e.cite.doc+" - "+e.cite.loc));
+    d.appendChild(sum);d.appendChild(el("div","quote","“"+e.quote+"”"));b.appendChild(d);
+    return b;
+  }
+  function renderFallback(){
+    var b=el("div","bubble");b.appendChild(el("div","b-title","Not in the seeded manual slice"));
+    var ol=el("ul","steps");
+    ["This shareable demo only carries fault codes E1-E5 plus a few common symptoms.","The production build searches the full manual library and would answer this with a cited page.","Try an error code (E1-E5), or ask about heating, cooling, a water leak or noise."].forEach(function(s){ol.appendChild(el("li",null,s));});
+    b.appendChild(ol);return b;
+  }
+  function addBot(e){var w=el("div","msg bot");w.appendChild(el("div","who","Field Assist"));w.appendChild(e?renderAnswer(e):renderFallback());thread.appendChild(w);scroll();}
+  function ask(text){
+    text=text.trim();if(!text)return;addUser(text);
+    var e=lookup(text),tw=el("div","msg bot"),t=el("div","typing");
+    t.appendChild(el("i"));t.appendChild(el("i"));t.appendChild(el("i"));tw.appendChild(t);thread.appendChild(tw);scroll();
+    setTimeout(function(){thread.removeChild(tw);addBot(e);},reduce?0:620);
+  }
+  form.addEventListener("submit",function(ev){ev.preventDefault();var v=input.value;input.value="";ask(v);});
+  var sg=document.getElementById("suggest");
+  SUGGEST.forEach(function(s){var c=el("button","chip",s.label);c.type="button";c.addEventListener("click",function(){ask(s.q);});sg.appendChild(c);});
+  var cl=document.getElementById("codelist");
+  KB.filter(function(x){return x.code;}).forEach(function(x){var li=el("li");li.appendChild(el("span","c",x.code));li.appendChild(el("span",null,x.title.replace(/ \(.*/,"")));li.appendChild(el("span","s "+x.sev));cl.appendChild(li);});
+  addUser("Unit 2.0 is throwing E5");
+  addBot(KB.filter(function(x){return x.id==="E5";})[0]);
+})();
+</script>
+</body>
+</html>

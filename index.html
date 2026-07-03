@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI proof-of-concepts for Innova - Matthew Hasson</title>
+<meta name="description" content="Two working AI tools built for Innova: a technician troubleshooting copilot and a documentation consistency dashboard.">
+<link rel="stylesheet" href="assets/base.css">
+<style>
+.hero{margin:52px 0 40px;max-width:64ch}
+.hero .eyebrow{margin-bottom:16px}
+.hero h1{font-size:clamp(28px,4.4vw,42px);line-height:1.1;letter-spacing:-.02em;margin:0 0 16px;
+  text-wrap:balance;color:#f4fafb;font-weight:680}
+.hero h1 em{font-style:normal;color:var(--cyan)}
+.hero p{margin:0;font-size:16px;color:#aab8bb;max-width:56ch}
+
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:16px}
+@media(max-width:760px){.tools{grid-template-columns:1fr}}
+.tool{border:1px solid var(--line-d);border-radius:18px;padding:22px 22px 20px;background:rgba(255,255,255,.02);
+  display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:.18s;position:relative;overflow:hidden}
+.tool:hover{border-color:var(--cyan);transform:translateY(-2px);background:rgba(18,179,198,.05)}
+.tool .kind{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin-bottom:14px}
+.tool h2{margin:0 0 8px;font-size:21px;font-weight:660;color:#f2f8f9;letter-spacing:-.01em}
+.tool .prob{font-size:13px;color:var(--ink-faint);font-family:var(--mono);margin:0 0 12px;line-height:1.5}
+.tool p{margin:0 0 18px;font-size:14.5px;color:#b4c1c4;line-height:1.55;flex:1}
+.tool .go{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:var(--cyan);
+  align-self:flex-start}
+.tool .go::after{content:"\2192";transition:transform .18s}
+.tool:hover .go::after{transform:translateX(4px)}
+.mini{display:flex;gap:5px;margin-bottom:16px}
+.mini i{height:5px;border-radius:3px;background:var(--line-d);flex:1}
+.mini i.a{background:var(--cyan)}.mini i.b{background:var(--amber)}
+
+.how{margin-top:12px;border-top:1px solid var(--line-d);padding-top:26px}
+.how .eyebrow{margin-bottom:16px}
+.steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:680px){.steps3{grid-template-columns:1fr}}
+.s3{border:1px solid var(--line-d);border-radius:14px;padding:16px}
+.s3 .n{font-family:var(--mono);font-size:11px;color:var(--cyan);margin-bottom:9px}
+.s3 h3{margin:0 0 6px;font-size:15px;color:#eef4f5;font-weight:620}
+.s3 p{margin:0;font-size:13px;color:#9fb0b3;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="frame">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <div>
+        <div class="brand-name">AI proof-of-concepts <span>for Innova</span></div>
+        <div class="brand-sub">Working tools, not slides</div>
+      </div>
+    </div>
+    <span class="frame-note">built by Matthew Hasson</span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">AI Growth Manager candidate</div>
+      <h1>Two AI tools I built for Innova, <em>before day one.</em></h1>
+      <p>The role is to go department by department and turn manual, document-heavy work into AI-assisted work. Rather than describe how I'd do that, I picked two departments and built something you can actually click. Both run entirely in your browser - no login, no setup - and both are grounded in Innova's real products.</p>
+    </section>
+
+    <section class="tools">
+      <a class="tool" href="field-assist/index.html">
+        <div class="mini"><i class="a"></i><i class="a"></i><i></i><i></i></div>
+        <div class="kind">Field technicians &middot; conversational tool</div>
+        <h2>Field Assist</h2>
+        <p class="prob">Problem: techs hunt through PDF manuals for the right error code on site.</p>
+        <p>A troubleshooting copilot. A technician types a fault in plain language and gets a clear, step-by-step fix with the exact manual page it came from - grounded in Innova's real 2.0 error codes.</p>
+        <span class="go">Open Field Assist</span>
+      </a>
+
+      <a class="tool" href="docsync/index.html">
+        <div class="mini"><i class="b"></i><i></i><i class="a"></i><i></i></div>
+        <div class="kind">Documentation &middot; ops dashboard</div>
+        <h2>DocSync</h2>
+        <p class="prob">Problem: a spec changes and old figures quietly stay in a French datasheet.</p>
+        <p>A consistency dashboard for a four-country manufacturer. When a spec changes, it finds every manual and datasheet that references it, in every language, and drafts the fix before a stale doc ships.</p>
+        <span class="go">Open DocSync</span>
+      </a>
+    </section>
+
+    <section class="how">
+      <div class="eyebrow">How I'd actually work in the role</div>
+      <div class="steps3">
+        <div class="s3"><div class="n">01</div><h3>Sit with the department</h3><p>Understand the real pain from the people doing the work, not from an org chart.</p></div>
+        <div class="s3"><div class="n">02</div><h3>Ship one quick win</h3><p>Pick a high-value, low-risk task and put a working tool in their hands in weeks, then measure the hours saved.</p></div>
+        <div class="s3"><div class="n">03</div><h3>Expand from proof</h3><p>Roll the same approach to the next department once the first one has numbers behind it.</p></div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span><b>Matthew Hasson</b> &middot; <a href="mailto:mattstermh@hotmail.com">mattstermh@hotmail.com</a></span>
+      <span class="mono">no obligation &middot; a conversation starter</span>
+    </footer>
+  </main>
+</div>
+</body>
+</html>
