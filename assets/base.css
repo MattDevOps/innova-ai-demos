@@ -16,7 +16,7 @@ img{max-width:100%;display:block}
   --ink:#0b0c0f;
   --ink-soft:#33363d;
   --ink-mut:#5b616b;
-  --ink-faint:#868c97;
+  --ink-faint:#6b7280;  /* AA: 4.8:1 on white */
   --acc:#4f46e5;        /* indigo-600, AA on white */
   --acc-2:#7c3aed;      /* violet-600 */
   --acc-deep:#4338ca;
