@@ -3,89 +3,90 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AI proof-of-concepts for Innova - Matthew Hasson</title>
+<title>Innova AI - two working AI tools by Matthew Hasson</title>
 <meta name="description" content="Two working AI tools built for Innova: a technician troubleshooting copilot and a documentation consistency dashboard.">
 <link rel="stylesheet" href="assets/base.css">
 <style>
-.hero{margin:56px 0 44px;max-width:64ch}
-.hero h1{font-size:clamp(28px,4.4vw,43px);line-height:1.12;letter-spacing:-.025em;margin:0 0 18px;
-  text-wrap:balance;color:var(--ink);font-weight:700}
-.hero h1 em{font-style:normal;color:var(--cyan)}
-.hero p{margin:0;font-size:16px;color:var(--ink-mut);max-width:58ch;line-height:1.6}
+.hero{padding:clamp(52px,8vw,104px) 0 clamp(40px,5vw,60px)}
+.hero h1{margin:0;font-weight:700;font-size:clamp(38px,6.2vw,64px);line-height:1.04;letter-spacing:-.035em;max-width:16ch;color:var(--ink)}
+.hero h1 span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{margin:22px 0 0;font-size:clamp(16px,1.6vw,18.5px);line-height:1.6;color:var(--ink-mut);max-width:56ch}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:28px}
+.chip{font-family:var(--mono);font-size:12px;color:var(--ink-mut);border:1px solid var(--line-strong);border-radius:8px;padding:6px 11px;background:var(--soft)}
 
-.tools{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:16px}
-@media(max-width:760px){.tools{grid-template-columns:1fr}}
-.tool{border:1px solid var(--line);border-radius:18px;padding:24px;background:var(--surface);box-shadow:var(--shadow-sm);
-  display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:.2s;position:relative;overflow:hidden}
-.tool:hover{border-color:var(--cyan);transform:translateY(-3px);box-shadow:var(--shadow-lift)}
-.tool .kind{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--cyan);margin-bottom:15px}
-.tool h2{margin:0 0 9px;font-size:22px;font-weight:680;color:var(--ink);letter-spacing:-.02em}
-.tool .prob{font-size:12.5px;color:var(--ink-faint);font-family:var(--mono);margin:0 0 13px;line-height:1.55}
-.tool p{margin:0 0 20px;font-size:14.5px;color:var(--ink-soft);line-height:1.6;flex:1}
-.tool .go{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:var(--cyan);
-  align-self:flex-start}
-.tool .go::after{content:"\2192";transition:transform .18s}
-.tool:hover .go::after{transform:translateX(4px)}
-.mini{display:flex;gap:5px;margin-bottom:18px}
-.mini i{height:5px;border-radius:3px;background:var(--line-strong);flex:1}
-.mini i.a{background:var(--cyan-bright)}.mini i.b{background:var(--amber-bright)}
+.tools{display:grid;grid-template-columns:1fr;gap:16px;margin-top:clamp(28px,4vw,40px)}
+@media(min-width:760px){.tools{grid-template-columns:1fr 1fr}}
+.tool{position:relative;border:1px solid var(--line);border-radius:var(--r-lg);padding:24px;background:var(--bg);
+  box-shadow:var(--sh-sm);transition:transform .2s,border-color .2s,box-shadow .2s;display:flex;flex-direction:column;color:inherit;overflow:hidden}
+.tool:hover{transform:translateY(-4px);border-color:var(--line-strong);box-shadow:var(--sh-lift)}
+.tool .ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;margin-bottom:16px;color:#fff;
+  font-size:19px;background:var(--grad);box-shadow:0 8px 18px -8px rgba(79,70,229,.6)}
+.tool .kind{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
+.tool h2{margin:0 0 8px;font-size:22px;font-weight:600;letter-spacing:-.02em;color:var(--ink)}
+.tool .prob{font-family:var(--mono);font-size:12px;line-height:1.5;color:var(--acc-deep);background:var(--acc-soft);
+  border:1px solid var(--acc-line);border-radius:8px;padding:8px 11px;margin:0 0 14px}
+.tool p{margin:0 0 20px;font-size:14.5px;line-height:1.6;color:var(--ink-mut);flex:1}
+.tool .go{font-size:14px;font-weight:600;color:var(--acc);display:inline-flex;align-items:center;gap:7px;align-self:flex-start}
+.tool .go span{transition:transform .2s}
+.tool:hover .go span{transform:translateX(5px)}
 
-.how{margin-top:14px;border-top:1px solid var(--line);padding-top:30px}
-.how .eyebrow{margin-bottom:18px}
-.steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-@media(max-width:680px){.steps3{grid-template-columns:1fr}}
-.s3{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--surface);box-shadow:var(--shadow-sm)}
-.s3 .n{width:22px;height:2px;border-radius:2px;background:var(--cyan);margin-bottom:12px}
-.s3 h3{margin:0 0 7px;font-size:15px;color:var(--ink);font-weight:640;letter-spacing:-.01em}
-.s3 p{margin:0;font-size:13px;color:var(--ink-mut);line-height:1.55}
+.how{margin-top:clamp(40px,6vw,66px);border-top:1px solid var(--line);padding-top:clamp(30px,4vw,40px)}
+.steps3{display:grid;grid-template-columns:1fr;gap:16px;margin-top:22px}
+@media(min-width:680px){.steps3{grid-template-columns:repeat(3,1fr)}}
+.s3{border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;background:var(--bg);box-shadow:var(--sh-sm)}
+.s3 .n{font-family:var(--mono);font-weight:500;font-size:12px;color:var(--acc);letter-spacing:.02em;margin-bottom:14px}
+.s3 h3{margin:0 0 7px;font-size:15px;color:var(--ink);font-weight:600;letter-spacing:-.01em}
+.s3 p{margin:0;font-size:13.2px;color:var(--ink-mut);line-height:1.55}
 </style>
 </head>
 <body>
 <div class="page">
 
   <header class="frame">
-    <div class="brand">
+    <a class="brand" href="index.html">
       <span class="mark" aria-hidden="true"></span>
       <div>
-        <div class="brand-name">AI proof-of-concepts <span>for Innova</span></div>
+        <div class="brand-name">Innova <span>AI</span></div>
         <div class="brand-sub">Working tools, not slides</div>
       </div>
-    </div>
+    </a>
     <span class="frame-note">built by Matthew Hasson</span>
   </header>
 
   <main>
     <section class="hero">
-      <h1>Two AI tools I built for Innova, <em>before day one.</em></h1>
-      <p>The role is to go department by department and turn manual, document-heavy work into AI-assisted work. Rather than describe how I'd do that, I picked two departments and built something you can actually click. Both run entirely in your browser - no login, no setup - and both are grounded in Innova's real products.</p>
+      <span class="badge" style="margin-bottom:26px"><span class="d"></span>AI Growth Manager &middot; working portfolio</span>
+      <h1>Two AI tools I built for Innova, <span>before day one.</span></h1>
+      <p class="sub">The role is to go department by department and turn manual, document-heavy work into AI-assisted work. Rather than describe how I'd do it, I built two tools you can run right now &mdash; grounded in Innova's real products.</p>
+      <div class="chips"><span class="chip">Runs in-browser</span><span class="chip">No login</span><span class="chip">Grounded &amp; cited</span></div>
     </section>
 
     <section class="tools">
       <a class="tool" href="field-assist/index.html">
-        <div class="mini"><i class="a"></i><i class="a"></i><i></i><i></i></div>
-        <div class="kind">Field technician copilot</div>
+        <div class="ic" aria-hidden="true">&#9673;</div>
+        <div class="kind">Field technicians</div>
         <h2>Field Assist</h2>
-        <p class="prob">Problem: techs hunt through PDF manuals for the right error code on site.</p>
-        <p>A troubleshooting copilot. A technician types a fault in plain language and gets a clear, step-by-step fix with the exact manual page it came from - grounded in Innova's real 2.0 error codes.</p>
-        <span class="go">Open Field Assist</span>
+        <p class="prob">Techs hunt through PDF manuals for the right error code on site.</p>
+        <p>A troubleshooting copilot. A technician types a fault in plain language and gets a step-by-step fix with the exact manual page it came from &mdash; grounded in Innova's real 2.0 error codes.</p>
+        <span class="go">Open Field Assist <span>&rarr;</span></span>
       </a>
 
       <a class="tool" href="docsync/index.html">
-        <div class="mini"><i class="b"></i><i></i><i class="a"></i><i></i></div>
-        <div class="kind">Documentation dashboard</div>
+        <div class="ic" aria-hidden="true">&#9707;</div>
+        <div class="kind">Documentation team</div>
         <h2>DocSync</h2>
-        <p class="prob">Problem: a spec changes and old figures quietly stay in a French datasheet.</p>
-        <p>A consistency dashboard for a four-country manufacturer. When a spec changes, it finds every manual and datasheet that references it, in every language, and drafts the fix before a stale doc ships.</p>
-        <span class="go">Open DocSync</span>
+        <p class="prob">A spec changes and old figures quietly stay in a French datasheet.</p>
+        <p>A consistency dashboard for a four-country manufacturer. When a spec changes, it finds every stale document, in every language, and drafts the fix before it ships.</p>
+        <span class="go">Open DocSync <span>&rarr;</span></span>
       </a>
     </section>
 
     <section class="how">
       <div class="eyebrow">How I'd work in the role</div>
       <div class="steps3">
-        <div class="s3"><div class="n" aria-hidden="true"></div><h3>Sit with the department</h3><p>Understand the real pain from the people doing the work, not from an org chart.</p></div>
-        <div class="s3"><div class="n" aria-hidden="true"></div><h3>Ship one quick win</h3><p>Pick a high-value, low-risk task and put a working tool in their hands in weeks, then measure the hours saved.</p></div>
-        <div class="s3"><div class="n" aria-hidden="true"></div><h3>Expand from proof</h3><p>Roll the same approach to the next department once the first one has numbers behind it.</p></div>
+        <div class="s3"><div class="n">01</div><h3>Sit with the department</h3><p>Understand the real pain from the people doing the work, not from an org chart.</p></div>
+        <div class="s3"><div class="n">02</div><h3>Ship one quick win</h3><p>Pick a high-value, low-risk task and put a working tool in their hands in weeks, then measure the hours saved.</p></div>
+        <div class="s3"><div class="n">03</div><h3>Expand from proof</h3><p>Roll the same approach to the next department once the first one has numbers behind it.</p></div>
       </div>
     </section>
 
